@@ -26,15 +26,16 @@ const sendEmail = async (options) => {
 
         const result = await response.json();
 
-        if (!response.ok) {
-            console.error("Email sent successfully via Brevo:", result.messageId);
+        if (response.ok) {
+            console.log("Email sent successfully via Brevo:", result.messageId);
+            return result;
         } else {
-            console.log("Brevo Api key Error:", result);
+            console.error("Brevo Api key Error:", result);
             throw new Error(result.message || "Could not send email via Brevo");
         }
     } catch (error) {
-        console.log("Brevo Email Error:", result);
-            throw new Error("Could not send email via Brevo");
+        console.error("Brevo Email Error:", result);
+        throw new Error("Could not send email via Brevo");
     }
 };
 

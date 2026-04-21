@@ -1,8 +1,8 @@
-import User from "../models/user.model";
-import bcrypt from "bcrypt";
-import sendEmail from "../utils/email.util";
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
 
 // Register
 export const register = async (req, res) => {
@@ -101,7 +101,7 @@ export const verifyEmail = async (req, res) => {
             return res.status(400).json({ message: "Email and code are required" });
         }
 
-        const user = await User.findOne({email});
+        user = await User.findOne({email});
         if(!user){
             return res.status(404).json({ message: "User not found" });
         }
@@ -132,7 +132,7 @@ export const verifyEmail = async (req, res) => {
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
-        const user = await User.findOne({ email });
+        user = await User.findOne({ email });
 
         if (!user) {
             return res.status(404).json({ message: "No user found with that email address" });
