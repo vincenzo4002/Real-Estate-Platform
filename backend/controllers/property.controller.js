@@ -413,7 +413,7 @@ export const getSellerDashboard = async (req, res) => {
 }
 
 //get properties count by type
-export const getPropertyCountByType = async (req, res) => {
+export const getPropertyCounts = async (req, res) => {
     try {
         const counts = await Property.aggregate([
       { $match: { status: "sale" } },

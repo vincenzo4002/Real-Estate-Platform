@@ -1,9 +1,10 @@
 import express from "express";
-import { getAllProperties, getPropertyById, deleteProperty, addInquiry, getMyProperties, addProperty, getPropertyCounts } from "../controllers/property.controller.js";
+import { getAllProperties, deleteProperty, getMyProperties, addProperty, getPropertyDetails } from "../controllers/property.controller.js";
 import { authorize, protect } from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/upload.middleware.js";
 import { updatePropertyStatus, getSellerDashboard } from "../controllers/property.controller.js";
 import Inquiry from "../models/inquiry.model.js";
+import { updateProperty,getPropertyCounts } from "../controllers/property.controller.js";
 
 
 const propertyRouter = express.Router();
@@ -20,7 +21,7 @@ propertyRouter.delete("/:id", protect, authorize("seller"), deleteProperty);
 propertyRouter.patch("/:id/status", protect, authorize("seller"), updatePropertyStatus);
 
 propertyRouter.get("/counts", getPropertyCounts);
-propertyRouter.get("/:id", getPropertyById);
+propertyRouter.get("/:id", getPropertyDetails);
 
 propertyRouter.get("/seller/dashboard", protect, authorize("seller"), getSellerDashboard);
 

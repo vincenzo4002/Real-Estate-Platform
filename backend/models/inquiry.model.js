@@ -17,7 +17,7 @@ const inquirySchema = new mongoose.Schema({
         required: true
     },
     isRead: {
-        type: Booolean,
+        type: Boolean,
         default: false
     },
 },{ timestamps: true
