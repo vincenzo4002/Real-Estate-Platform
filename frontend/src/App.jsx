@@ -1,13 +1,15 @@
-import React from 'react'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/shared/LandingPage';
 
 const App = () => {
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+     <Routes>
+        <Route path="/" element={<LandingPage />} />
+     </Routes>
     </div>
   )
 }
 
-export default App
+export default App;
