@@ -73,7 +73,7 @@ const Navbar = () => {
 
   return (
     <>
-    <nav className={s.navbar}>
+    <nav className={s.nav}>
         <div className={s.container}>
             <div className={s.grid}>
                 <div className='justify-self-start'>
@@ -81,6 +81,25 @@ const Navbar = () => {
                 </div>
                 <div className={s.desktopMenu}>
                     {navLinks}
+                </div>
+
+                {/* right side */}
+                <div className={s.rightSection}>
+                {user ? (
+                    <div className={s.userSection}>
+                    <Link to='/profile' className="flex items-center ">
+                        <img src={
+                        user.profilePic ||
+                        `https://ui-avatars.com/api/?name=${user.name}&background=0d6e59&color=fff`
+                      }
+                      alt="Profile"
+                      className={s.avatar} />
+                    </Link>
+                    <button onClick={logout} className={s.logoutButton}>
+                        Logout 
+                    </button>
+                    </div>
+                ) : null}
                 </div>
             </div>
         </div>
