@@ -6,6 +6,7 @@ const LandingPage = () => {
   return (
     <div className={s.bgMain}>
        <Navbar />
+       
     </div>
   );
 };
