@@ -3,7 +3,7 @@ import { landingPageStyles as s } from '../../assets/dummyStyles';
 import Navbar from '../../components/common/Navbar';
 import { HiLocationMarker } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from '../../context/AuthContext';
 import { useEffect } from 'react';
 import axios from 'axios';
 import API_URL from '../../config';
