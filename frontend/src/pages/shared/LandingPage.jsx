@@ -187,7 +187,8 @@ const LandingPage = () => {
             <div className={s.searchDivider}></div>
             <div className={s.searchField}>
               <div className={s.textPrimary}>
-                
+              </div>
+            </div>
           </form>
         </div>
       </section>
