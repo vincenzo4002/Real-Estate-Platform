@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { landingPageStyles as s } from '../../assets/dummyStyles';
 import Navbar from '../../components/common/Navbar';
-import { HiCurrencyDollar, HiHome, HiLightningBolt, HiLocationMarker, HiOfficeBuilding, HiShieldCheck, HiVideoCamera } from 'react-icons/hi';
+import { HiCurrencyDollar, HiHome, HiSearch, HiLightningBolt, HiLocationMarker, HiOfficeBuilding, HiShieldCheck, HiVideoCamera } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useEffect } from 'react';
 import axios from 'axios';
 import API_URL from '../../config';
+import banner from '../../assets/bannerimage.png';
 
 const LandingPage = () => {
 
@@ -18,7 +19,7 @@ const LandingPage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [propertyType, setPropertyType] = useState("Select Type");
-  const [propertyCount, setPropertyCount] = useState({
+  const [propertyCounts, setPropertyCounts] = useState({
     flat: 0,
     villa: 0,
     penthouse: 0,
@@ -107,6 +108,7 @@ const LandingPage = () => {
     navigate(`/properties?${params.toString()}`);
   };
 
+
   const categories = [
     {
       name: "Modern Flats",
@@ -187,11 +189,137 @@ const LandingPage = () => {
             <div className={s.searchDivider}></div>
             <div className={s.searchField}>
               <div className={s.textPrimary}>
+                <HiHome size={26} />
+              </div>
+              <div className={s.flexCol}>
+                <label className={s.labelSmall}>Property Type</label>
+                <select
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  className={`${s.inputTransparent} cursor-pointer`}
+                >
+                  <option value="Select Type">Select Type</option>
+                  <option value="flat">Flat/Apartment</option>
+                  <option value="villa">Villa/House</option>
+                  <option value="penthouse">Penthouse</option>
+                  <option value="commercial">Commercial</option>
+                </select>
               </div>
             </div>
+            <button type="submit" className={s.searchButton}>
+              <HiSearch size={22} /> Search
+            </button>
           </form>
+
+          {/* stats */}
+          <div className={s.statsContainer}>
+            <div className={s.statItemFlex}>
+              <h3 className={s.statNumber}>12k+</h3>
+              <p className={s.statLabel}>Ready Properties</p>
+            </div>
+            <div className={s.statItemBorder}>
+              <h3 className={s.statNumber}>500+</h3>
+              <p className={s.statLabel}>Agent Network</p>
+            </div>
+            <div className={s.statItemBorder}>
+              <h3 className={s.statNumber}>4.9/5</h3>
+              <p className={s.statLabel}>User Rating</p>
+            </div>
+          </div>
+        </div>
+
+        {/* hero image */}
+        <div className={s.heroImageContainer}>
+          <div className={s.imageWrapper}>
+            <img src={banner} alt="banner" className={s.heroImage} />
+
+            <div className={s.verifiedBadge}>
+              <div className={s.badgeIconWrapper}>
+                <HiShieldCheck size={24} className=" text-primary" />
+              </div>
+              <div>
+                <h4 className={s.badgeTitle}>Verified Listing</h4>
+                <p className={s.badgeText}>
+                  Inspected by our professional team
+                </p>
+              </div>
+              <span className={s.preApproved}>Pre-Approved</span>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* category section */}
+      <section className={s.categorySection}>
+        <div className={s.container}>
+          <div className={s.categoryHeader}>
+            <div className={s.categoryHeaderText}>
+              <h2 className={s.categoryTitle}>Browse by Category</h2>
+              <p className={s.categoryDesc}>
+                Explore curated collections of properties tailored to your specific lifestyle and needs.
+              </p>
+            </div>
+          </div>
+
+          <div className={s.categoryGrid}>
+            {categories.map((cat, idx) => (
+              <div key={idx} className={s.categoryCard} onClick={() => navigate(`/properties?type=${cat.type}`)}>
+                <div className={s.categoryIcon}>{cat.icon}</div>
+                <h3 className={s.categoryName}>{cat.name}</h3>
+                <p className={s.categoryCount}>{cat.count.toLocaleString()} Properties</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* features section */}
+      <section className={s.featuresSection}>
+        <div className={s.featuresContainer}>
+          <div className={s.featuresList}>
+            {features.map((f, idx) => (
+              <div key={idx} className={s.featureCard}
+                style={{ animationDelay: `${idx * 0.1}s` }}>
+                <div className={s.featureIconWrapper}>{f.icon}</div>
+                <h3 className={s.featureTitle}>{f.title}</h3>
+                <p className={s.featureDesc}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className={s.featuresContent}>
+            <h2 className={s.featuresHeading}>
+              Why RealEstate <br /> is the <span className={s.textGradient}>Preferred Choice</span>
+            </h2>
+            <p className={s.featuresSubtext}>
+              We've reinvented the property search experience from the ground
+              up. By focusing on transparency, technological precision, and
+              user-centric design, we help you find not just a house, but a
+              home.
+            </p>
+
+            <ul className={s.featuresListItems}>
+              {[
+                "Direct connection with certified agents",
+                "Real-time market valuation data",
+                "Secure document management system",
+                "24/7 Premium customer support",
+              ].map((item, idx) => (
+                <li key={idx} className={s.listItem}>
+                  <HiLightningBolt className=" text-primary" /> {item}
+                </li>
+              ))}
+            </ul>
+            <a href="#process" className={s.learnMoreLink}>
+              Learn more about our process &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* how it works */}
+      
+
     </div>
   );
 };
