@@ -1,14 +1,24 @@
 import React, { useState } from 'react'
 import { landingPageStyles as s } from '../../assets/dummyStyles';
 import Navbar from '../../components/common/Navbar';
-import { HiCurrencyDollar, HiHome, HiSearch, HiLightningBolt, HiLocationMarker, HiOfficeBuilding, HiShieldCheck, HiVideoCamera } from 'react-icons/hi';
+import { 
+  HiCurrencyDollar, 
+  HiHome, 
+  HiLightningBolt, 
+  HiLocationMarker, 
+  HiOfficeBuilding, 
+  HiSearch,
+  HiShieldCheck, 
+  HiVideoCamera 
+} from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useEffect } from 'react';
 import axios from 'axios';
 import API_URL from '../../config';
 import banner from '../../assets/bannerimage.png';
-import PropertyCard from '../../components/common/propertyCard';
+import PropertyCard from '../../components/common/PropertyCard';
+
 
 const LandingPage = () => {
 
@@ -280,7 +290,8 @@ const LandingPage = () => {
           <div className={s.featuresList}>
             {features.map((f, idx) => (
               <div key={idx} className={s.featureCard}
-                style={{ animationDelay: `${idx * 0.1}s` }}>
+                style={{ animationDelay: `${idx * 0.1}s` }}
+              >
                 <div className={s.featureIconWrapper}>{f.icon}</div>
                 <h3 className={s.featureTitle}>{f.title}</h3>
                 <p className={s.featureDesc}>{f.desc}</p>
@@ -290,7 +301,8 @@ const LandingPage = () => {
 
           <div className={s.featuresContent}>
             <h2 className={s.featuresHeading}>
-              Why RealEstate <br /> is the <span className={s.textGradient}>Preferred Choice</span>
+              Why RealEstate <br />
+              is the <span className={s.textGradient}>Preferred Choice</span>
             </h2>
             <p className={s.featuresSubtext}>
               We've reinvented the property search experience from the ground
@@ -321,43 +333,45 @@ const LandingPage = () => {
       {/* how it works */}
       <section id="process" className={s.processSection}>
         <div className={s.container}>
-          <span className={s.processBadge}>How It Works</span>
-          <h2 className={s.processTitle}>
-            Our Seamless <span className={s.textGradient}>Process</span>
-          </h2>
-          <p className={s.processSubtitle}>
-            We've simplified the journey of finding your dream home into three clear, stress-free steps.
-          </p>
-        </div>
+          <div className={s.processHeader}>
+            <span className={s.processBadge}>How It Works</span>
+            <h2 className={s.processTitle}>
+              Our Seamless <span className={s.textGradient}>Process</span>
+            </h2>
+            <p className={s.processSubtitle}>
+              We've simplified the journey of finding your dream home into three clear, stress-free steps.
+            </p>
+          </div>
 
-        <div className={s.processGrid}>
-          {[
-            {
-              step: "01",
-              title: "Smart Search",
-              desc: "Leverage our AI-driven Smart Search algorithms to find the best property matches tailored to your specific preferences.",
-              icon: <HiLightningBolt size={32} />,
-            },
-            {
-              step: "02",
-              title: "Virtual Tours",
-              desc: "Experience your future home from anywhere with our high-definition 3D virtual tours and immersive walkthroughs.",
-              icon: <HiVideoCamera size={32} />,
-            },
-            {
-              step: "03",
-              title: "Verified Trust",
-              desc: "Every listing is strictly audited for ownership and condition, ensuring your peace of mind and a secure transaction.",
-              icon: <HiShieldCheck size={32} />,
-            },
-          ].map((p, idx) => (
-            <div key={idx} className={s.processCard}>
-              <div className={s.stepNumber}>{p.step}</div>
-              <div className={s.processIconWrapper}>{p.icon}</div>
-              <h3 className={s.processCardTitle}>{p.title}</h3>
-              <p className={s.processCardDesc}>{p.desc}</p>
-            </div>
-          ))}
+          <div className={s.processGrid}>
+            {[
+              {
+                step: "01",
+                title: "Smart Search",
+                desc: "Leverage our AI-driven Smart Search algorithms to find the best property matches tailored to your specific preferences.",
+                icon: <HiLightningBolt size={32} />,
+              },
+              {
+                step: "02",
+                title: "Virtual Tours",
+                desc: "Experience your future home from anywhere with our high-definition 3D virtual tours and immersive walkthroughs.",
+                icon: <HiVideoCamera size={32} />,
+              },
+              {
+                step: "03",
+                title: "Verified Trust",
+                desc: "Every listing is strictly audited for ownership and condition, ensuring your peace of mind and a secure transaction.",
+                icon: <HiShieldCheck size={32} />,
+              },
+            ].map((p, idx) => (
+              <div key={idx} className={s.processCard}>
+                <div className={s.stepNumber}>{p.step}</div>
+                <div className={s.processIconWrapper}>{p.icon}</div>
+                <h3 className={s.processCardTitle}>{p.title}</h3>
+                <p className={s.processCardDesc}>{p.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -366,6 +380,7 @@ const LandingPage = () => {
         <div className={s.container}>
           <div className={s.featuredHeader}>
             <span className={s.featuredBadge}>Handpicked for You</span>
+            <h2 className={s.featuredTitle}>Featured Collection</h2>
             <p className={s.featuredSubtitle}>
               Discover high-value properties curated by our experts for their exceptional design, location, and investment potential
             </p>
@@ -375,11 +390,11 @@ const LandingPage = () => {
             <div className={s.loadingContainer}>
               <div className={s.loader}></div>
             </div>
-          ): error ? (
+          ) : error ? (
             <div className={s.errorContainer}>
               <p>{error}</p>
             </div>
-          ) : ( 
+          ) : (
             <div className={s.propertiesGrid}>
               {properties
                 .filter((p) => p)

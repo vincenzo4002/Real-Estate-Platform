@@ -20,7 +20,7 @@ const PORT = 5001;
 //DB
 connectDB();
 // Middleware
-const allowedOrigins = ["http://localhost:5173/",].filter(Boolean);
+const allowedOrigins = ["http://localhost:5173",].filter(Boolean);
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
