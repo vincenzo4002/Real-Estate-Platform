@@ -525,7 +525,12 @@ const LandingPage = () => {
             </div>
 
             <div className={s.designCredit}>
-              <img src={src} alt="logo" className={s.designLogo} />
+              <img src={logo} alt="logo" className={s.designLogo} />
+              <span className=" text-text-muted">Designed By</span>
+
+              <a href="https://hexagondigitalservices.com" target="_blank" className={s.designLink}>
+              Hexagon Digital Services
+              </a>
             </div>
           </div>
         </div>
