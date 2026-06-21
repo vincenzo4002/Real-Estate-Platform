@@ -13,15 +13,13 @@ import contactRouter from './routes/contact.routes.js';
 import adminRouter from './routes/admin.route.js';
 import chatRouter from './routes/chat.routes.js';
 
-
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
-//DB
-connectDB();
-// Middleware
-const allowedOrigins = ["http://localhost:5173",].filter(Boolean);
-app.use(cors({
+const allowedOrigins = ["http://localhost:5173"].filter(Boolean);
+
+app.use(
+  cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
@@ -48,28 +46,35 @@ app.get("/", (req, res) => {
 
 const server = http.createServer(app);
 
-//socket.io setup
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
-    methods: ["GET", "POST"],
-  }
+    methods: ['GET', 'POST'],
+  },
 });
 
-io.on("connection", (socket) => {
-  socket.on("joinChat", (chatId) => {
+io.on('connection', (socket) => {
+  socket.on('joinChat', (chatId) => {
     socket.join(chatId);
   });
 
-  socket.on("sendMessage", ({ chatId, message }) => {
-    io.to(data.chatId).emit("receiveMessage", data);
+  socket.on('sendMessage', ({ chatId, message }) => {
+    io.to(chatId).emit('receiveMessage', { chatId, message });
   });
 
-  socket.on("disconnect", () => { 
-    
-  });
+  socket.on('disconnect', () => {});
 });
 
-server.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    server.listen(PORT, () => {
+      console.log(`Server started on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
