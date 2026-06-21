@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { propertyDetailsStyles as s } from '../../assets/dummyStyles';
 import Navbar from '../../components/common/Navbar';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import API_URL from '../../config';
+import axios from 'axios';
+import { HiCalendar, HiChevronRight, HiCollection, HiLocationMarker, HiOutlineHome, HiOutlineUserGroup, HiOutlineViewGrid, HiX } from 'react-icons/hi';
+
 
 const PropertyDetails = () => {
     const { id } = useParams();
@@ -24,10 +28,310 @@ const PropertyDetails = () => {
         error: null,
     });
     const [isInWishlist, setIsInWishlist] = useState(false);
-    react(
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                setLoading(true);
+                const res = await axios.get(`${API_URL}/api/property/${id}`, {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                });
+                setProperty(res.data.property);
+                setSimilarProperties(res.data.similarProperties || []);
+
+                if (user && user.role === "buyer") {
+                    const wisshRes = await axios.get(`${API_URL}/api/wishlist`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    const found = wisshRes.data.some((item) => item.property?._id === id);
+                    setIsInWishlist(found);
+                }
+                setLoading(false);
+            } catch (err) {
+                setError("Failed to load property details.");
+                setLoading(false);
+            }
+        };
+        fetchDetails();
+    }, [id, user, token]);
+
+    //to handle wishlist toggle
+    const handleWishlistToggle = async () => {
+        if (!user) return navigate("/login");
+        try {
+            if (isInWishlist) {
+                await axios.delete(`${API_URL}/api/wishlist/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setIsInWishlist(false);
+            } else {
+                await axios.post(`${API_URL}/api/wishlist/${id}`, {}, {
+                    headers: { Authorization: `Bearer ${token}` },
+                },
+                );
+                setIsInWishlist(true);
+            }
+        } catch (err) {
+            alert("Failed to update wishlist.")
+        }
+    };
+
+    // to handle inquiry submit
+    const handleInquirySubmit = async (e) => {
+        e.preventDefault();
+        if (!user) {
+            return navigate("/login");
+        }
+        if (user.role !== "buyer") return alert("Only buyers can send inquiries");
+        setInquiryStatus({ ...inquiryStatus, loading: true });
+        try {
+            await axios.post(`${API_URL}/api/inquiry`, {
+                propertyId: id,
+                message: inquiry.message,
+            }, { header: { Authorization: `Bearer ${token}` } },
+            );
+            setInquiryStatus({ loading: false, success: true, error: null });
+            setInquiry({ ...inquiry, message: "" });
+        } catch (err) {
+            setInquiryStatus({
+                loading: false, success: true, error: "Failed to send inquiry",
+            });
+        }
+    };
+
+    // to start a chat
+    const handleChatStart = async () => {
+        e.preventDefault();
+        if (!user) {
+            return navigate("/login");
+        }
+        if (user.role !== "buyer") return alert("Only buyers can chat with sellers ");
+        try {
+            const res = await axios.post(`${API_URL}/api/chat/start`, {
+                propertyId: id,
+                sellerId: property.seller._id,
+            }, { header: { Authorization: `Bearer ${token}` } },
+            );
+
+            const chat = res.data;
+
+            await axios.post(`${API_URL}/api/chat/send`, {
+                chatId: chat._id,
+                text: `(Context: Imterested in property "${property.title}")`,
+                image: property.images[0],
+            }, { header: { Authorization: `Bearer ${token}` } },
+            );
+            navigate("/chat.message", { state: { chat } });
+        } catch (err) {
+            console.error("Error starting chat:", err);
+            alert("Failed to start chat.");
+        }
+    };
+
+    const [lightboxIndex, setLightboxIndex] = useState(null);
+
+    if (loading)
+        return (
+            <div className=" loader-full-page">
+                <div className="loader"></div>
+            </div>
+        );
+
+    if (error || !property)
+        return (
+            <div className="container" style={{ padding: "4rem", textAlign: "center" }}>
+                {error || "Property not found"}
+            </div>
+        );
+
+    const formattedPrice = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+    }).format(property.price);
+
+    const openLightbox = (index) => setLightboxIndex(index);
+    const closeLightbox = () => setLightboxIndex(null);
+    const nextImage = () =>
+        setLightboxIndex((prev) => (prev + 1) % property.images.length);
+    const prevImage = () =>
+        setLightboxIndex(
+            (prev) => (prev - 1 + property.images.length) % property.images.length,
+        );
+
+    return (
         <div className={s.pageContainer}>
             <Navbar />
-        </div>
+
+            <main className={s.mainContainer}>
+                <nav className={s.breadcrumbs} >
+                    <Link to="/" className={s.breadcrumbLink}>
+                        Home
+                    </Link>
+                    <HiChevronRight />
+                    <Link to="/properties" className={s.breadcrumbLink}>
+                        Listings
+                    </Link>
+                    <HiChevronRight />
+                    <span className={s.breadcrumbCurrent}>{property.title}</span>
+                </nav>
+
+                <div className={s.galleryContainer}>
+                    <div className={s.galleryGrid}
+                        style={{
+                            gridTemplateColumns:
+                                property.images.length > 1 ? "repeat(4, 1fr)" : "1fr",
+                            gridTemplateRows:
+                                property.images.length > 1 ? "repeat(2, 180px)" : "400px",
+                        }}
+                    >
+                        <div className={s.galleryMainItem(property.images.length > 1)}
+                            onClick={() => openLightbox(0)}>
+                            <img src={property.images[0]}
+                                alt="property.images"
+                                className={s.galleryImage}
+                            />
+                        </div>
+
+                        {property.images.slice(1, 5).map((img, idx) => (
+                            <div key={idx} className={s.gallerySideItem}
+                                onClick={() => openLightbox(idx + 1)}
+                            >
+                                <img src={img} alt="image" className={s.galleryImage} />
+                                {idx === 3 && property.image.length > 5 && (
+                                    <div className={s.galleryMoreOverlay}>
+                                        +{property.image.length - 5}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className={s.mobileSliderContainer}>
+                        <div className={s.mobileSliderTrack}>
+                            {property.images.map((img, idx) => (
+                                <div key={idx} className={s.mobileSlide}
+                                    onClick={() => openLightbox(idx)}
+                                >
+                                    <img src={img} alt="image" className={s.mobileSlideImage} />
+                                    <div className={s.mobileSlideCounter}>
+                                        {idx + 1} / {property.image.length}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* lightbox model */}
+                {lightboxIndex !== null && (
+                    <div className={s.lightboxOverlay} onClick={closeLightbox}>
+                        <button onClick={closeLightbox} className={s.lightboxCloseBtn}>
+                            <HiX size={24} className={s.lightboxCloseIcon} />
+                        </button>
+
+                        <div onClick={(e) => e.stopPropagation()} className={s.lightboxContent}>
+                            <img src={property.images[lightboxIndex]} alt="images" className={s.lightboxImage} />
+                            {property.images.length > 1 && (
+                                <>
+                                    <button onClick={prevImage} className={s.lightboxPrevBtn}>
+                                        <HiChevronLeft size={30} />
+                                    </button>
+                                    <button onClick={nextImage} className={s.lightboxNextBtn}>
+                                        <HiChevronRight size={30} />
+                                    </button>
+                                </>
+                            )}
+
+                            <div className={s.lightboxCounter}>
+                                {lightboxIndex + 1} / {property.images.length}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* main content */}
+                <div className={s.detailsLayout}>
+                    <div className={s.infoColumn}>
+                        <div className={s.infoHeader}>
+                            <div className={s.titleWrapper}>
+                                <div className={s.badgeWrapper}>
+                                    <span className={s.premiumBadge}>Premium Listing</span>
+                                </div>
+                                <h1 className={s.propertyTitle}>
+                                    {property.title}
+                                </h1>
+                                <p className={s.propertyLocation}>
+                                    <HiLocationMarker className={s.locationIcon} />
+                                    <span className={s.locationText}>
+                                        {property.area}, {property.city}, India
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div className={s.actionButtons}>
+
+                                {(!user || user.role === "buyer") && (
+
+                                    <button
+                                        onClick={handleWishlistToggle}
+
+                                        className={s.wishlistButton(isInWishlist)}
+                                    >
+                                        {isInWishlist ? (
+                                            <HiHeart size={26} fill="#ef4444" />
+                                        ) : (
+                                            <HiOutlineHeart size={26} />
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* quick stats */}
+                        <div className={s.statsGrid}>
+                            {[
+                                {
+                                    label: "Bedrooms",
+                                    value: property.bhk || 0,
+                                    icon: HiOutlineHome,
+                                },
+                                {
+                                    label: "Bathrooms",
+                                    value:
+                                        property.bathrooms ||
+                                        Math.max(1, (parseInt(property.bhk) || 1) - 1),
+                                    icon: HiOutlineUserGroup,
+                                },
+                                {
+                                    label: "Furnishing",
+                                    value: property.furnishing || "N/A",
+                                    icon: HiCollection,
+                                },
+                                {
+                                    label: "Living Area",
+                                    value: `${property.areaSize} sqft`,
+                                    icon: HiOutlineViewGrid,
+                                },
+                                {
+                                    label: "Type",
+                                    value: property.propertyType,
+                                    icon: HiCalendar,
+                                },
+                            ].map((stat, i) => (
+                                <div key={i} className={s.statCard}>
+                                    {stat.icon && <stat.icon size={18} className={s.statIcon} />}
+                                    <div className={s.statValue}>{stat.value}</div>
+                                    <div className={s.statLabel}>{stat.label}</div>
+                                </div>
+   
+              ))}
+
+                        </div>
+                    </div>
+                </div>
+            </main >
+        </div >
     )
 }
 
