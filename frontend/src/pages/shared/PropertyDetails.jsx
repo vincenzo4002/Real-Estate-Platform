@@ -5,7 +5,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API_URL from '../../config';
 import axios from 'axios';
-import { HiCalendar, HiChevronRight, HiCollection, HiLocationMarker, HiOutlineHome, HiOutlineUserGroup, HiOutlineViewGrid, HiX } from 'react-icons/hi';
+import { HiBadgeCheck, HiCalendar, HiChevronRight, HiCollection, HiLocationMarker, HiOutlineHome, HiOutlineUserGroup, HiOutlineViewGrid, HiX } from 'react-icons/hi';
 
 
 const PropertyDetails = () => {
@@ -324,9 +324,51 @@ const PropertyDetails = () => {
                                     <div className={s.statValue}>{stat.value}</div>
                                     <div className={s.statLabel}>{stat.label}</div>
                                 </div>
-   
               ))}
+                        </div>
 
+                        <div className={s.descriptionSection}>
+                            <h3 className={s.sectionTitle}>Dsecription</h3>
+                            <p className={s.descriptionText}>
+                                {property.description || 
+                                "No description available for this property."}
+                            </p>
+                        </div>
+
+                        <div classaName={s.amenitiesSection}>
+                            <h3 className={s.sectionTitle}>Amenities</h3>
+                            <div className={s.aminitiesGrid}>
+                                {(property.amenities?.length
+                  ? property.amenities
+                  : ["Parking", "Security", "Water Supply", "Power Backup"]
+                ).map((amn, i) => (
+                  <div key={i} className={s.amenityItem}>
+                    <HiBadgeCheck size={18} className={s.amenityIcon} />
+                    <span className={s.amenityText}>{amn}</span>
+                  </div>
+                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={s.sidebarColumn}>
+                        <div className={s.priceCard} style={{background: "var(--primary)"}}>
+                            <div className={s.priceCardLabel}>
+                                {property.status?.toLowerCase() === "rent" 
+                                ? "Rental Details"
+                            : "Listing Price"}
+                            </div>
+
+                            <div className={s.priceCardValue}>
+                                                {property.status?.toLowerCase() === "rent"
+                  ? `₹${Number(property.price).toLocaleString("en-IN")}`
+                  : formattedPrice}
+                {property.status?.toLowerCase() === "rent" && (
+                  <span className={s.priceCardPeriod}> /month</span>
+                )}
+                            </div>
+
+                            {property.status?.toLowerCase() === "rent" &&}
                         </div>
                     </div>
                 </div>
