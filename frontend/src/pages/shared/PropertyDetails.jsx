@@ -368,7 +368,13 @@ const PropertyDetails = () => {
                 )}
                             </div>
 
-                            {property.status?.toLowerCase() === "rent" &&}
+                            {property.status?.toLowerCase() === "rent" && (
+                                <div className={s.rentDetails}>
+                                    <div className={s.rentDetailsRow}>
+                                        <span className={s.rentDetailsLabel}>Security Deposit</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
