@@ -5,7 +5,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API_URL from '../../config';
 import axios from 'axios';
-import { HiBadgeCheck, HiCalendar, HiChevronRight, HiCollection, HiLocationMarker, HiOutlineHome, HiOutlineUserGroup, HiOutlineViewGrid, HiX } from 'react-icons/hi';
+import { HiBadgeCheck, HiCalendar, HiChatAlt, HiChevronRight, HiCollection, HiLocationMarker, HiOutlineHome, HiOutlineUserGroup, HiOutlineViewGrid, HiX } from 'react-icons/hi';
+import PropertyCard from '../../components/common/PropertyCard';
 
 
 const PropertyDetails = () => {
@@ -324,14 +325,14 @@ const PropertyDetails = () => {
                                     <div className={s.statValue}>{stat.value}</div>
                                     <div className={s.statLabel}>{stat.label}</div>
                                 </div>
-              ))}
+                            ))}
                         </div>
 
                         <div className={s.descriptionSection}>
                             <h3 className={s.sectionTitle}>Dsecription</h3>
                             <p className={s.descriptionText}>
-                                {property.description || 
-                                "No description available for this property."}
+                                {property.description ||
+                                    "No description available for this property."}
                             </p>
                         </div>
 
@@ -339,45 +340,189 @@ const PropertyDetails = () => {
                             <h3 className={s.sectionTitle}>Amenities</h3>
                             <div className={s.aminitiesGrid}>
                                 {(property.amenities?.length
-                  ? property.amenities
-                  : ["Parking", "Security", "Water Supply", "Power Backup"]
-                ).map((amn, i) => (
-                  <div key={i} className={s.amenityItem}>
-                    <HiBadgeCheck size={18} className={s.amenityIcon} />
-                    <span className={s.amenityText}>{amn}</span>
-                  </div>
-                ))}
+                                    ? property.amenities
+                                    : ["Parking", "Security", "Water Supply", "Power Backup"]
+                                ).map((amn, i) => (
+                                    <div key={i} className={s.amenityItem}>
+                                        <HiBadgeCheck size={18} className={s.amenityIcon} />
+                                        <span className={s.amenityText}>{amn}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
 
                     <div className={s.sidebarColumn}>
-                        <div className={s.priceCard} style={{background: "var(--primary)"}}>
+                        <div className={s.priceCard} style={{ background: "var(--primary)" }}>
                             <div className={s.priceCardLabel}>
-                                {property.status?.toLowerCase() === "rent" 
-                                ? "Rental Details"
-                            : "Listing Price"}
+                                {property.status?.toLowerCase() === "rent"
+                                    ? "Rental Details"
+                                    : "Listing Price"}
                             </div>
 
                             <div className={s.priceCardValue}>
-                                                {property.status?.toLowerCase() === "rent"
-                  ? `₹${Number(property.price).toLocaleString("en-IN")}`
-                  : formattedPrice}
-                {property.status?.toLowerCase() === "rent" && (
-                  <span className={s.priceCardPeriod}> /month</span>
-                )}
+                                {property.status?.toLowerCase() === "rent"
+                                    ? `₹${Number(property.price).toLocaleString("en-IN")}`
+                                    : formattedPrice}
+                                {property.status?.toLowerCase() === "rent" && (
+                                    <span className={s.priceCardPeriod}> /month</span>
+                                )}
                             </div>
 
                             {property.status?.toLowerCase() === "rent" && (
                                 <div className={s.rentDetails}>
                                     <div className={s.rentDetailsRow}>
                                         <span className={s.rentDetailsLabel}>Security Deposit</span>
+                                        <span className={s.rentDetailValue}>
+                                            ₹
+                                            {Number(property.securityDeposit || 0).toLocaleString(
+                                                "en-IN",
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div className={s.rentDetailRow}>
+                                        <span className={s.rentDetailsLabel}>Maintenance</span>
+                                        <span className={s.rentDetailValue}>
+                                            ₹
+                                            {Number(property.securityDeposit || 0).toLocaleString(
+                                                "en-IN",
+                                            )}
+                                            /mo
+                                        </span>
                                     </div>
                                 </div>
                             )}
+                            <div className={s.priceCardAvailability}>
+                                Available for{" "}
+                                {property.status?.toLowerCase() === "rent" ? "Rent" : "Sale"}
+                            </div>
+                        </div>
+
+                        {/* seller & contact */}
+
+                        <div className={s.sellerCard}>
+                            <div className={s.sellerInfo}>
+                                <div className={s.sellerAvatar}>
+                                    <img
+                                        src={
+                                            property.seller?.profilePic ||
+                                            `https://ui-avatars.com/api/?name=${property.seller?.name || "Seller"}&background=0d6e59&color=fff`
+                                        }
+                                        alt="Agent"
+                                        className={s.sellerAvatarImage}
+                                    />
+                                </div>
+                                <div className={s.sellerDetails}>
+                                    <div className={s.sellerNameLink}>
+                                        <h4 className={s.sellerName}>
+                                            {property.seller?.name || "Seller"}
+                                        </h4>
+                                    </div>
+                                    <div className={s.sellerVerifiedBadge}>
+                                        <HiBadgeCheck className={s.verifiedIcon} /> Verified Seller
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={s.chatButtonWrapper}>
+                                <button className={s.chatButton} onClick={handleChatStart}>
+                                    <HiChatAlt /> Chat
+                                </button>
+                            </div>
+
+                            {/* Inquiry Form */}
+                            <h4 className={s.inquiryFormTitle}>Inquire</h4>
+                            <form onSubmit={handleInquirySubmit}>
+                                {user?.role === "buyer" ? (
+                                    <>
+                                        <textarea
+                                            placeholder="Your Message..."
+                                            value={inquiry.message}
+                                            onChange={(e) =>
+                                                setInquiry({ ...inquiry, message: e.target.value })
+                                            }
+                                            className={s.inquiryTextarea}
+                                            required
+                                        />
+                                        <button
+                                            type="submit"
+                                            className={s.inquirySubmitButton}
+                                            disabled={inquiryStatus.loading}
+                                        >
+                                            {inquiryStatus.loading ? "Sending..." : "Send Inquiry"}
+                                        </button>
+                                        {inquiryStatus.success && (
+                                            <p className={s.inquirySuccessMessage}>Inquiry sent!</p>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className={s.inquiryDisabledMessage}>
+                                        <p className={s.inquiryDisabledText}>
+                                            {user
+                                                ? "Only buyers can send inquiries."
+                                                : "Please login as a buyer to send inquiries."}
+                                        </p>
+                                        {!user && (
+                                            <Link to="/login" className={s.inquiryLoginButton}>
+                                                Login
+                                            </Link>
+                                        )}
+                                    </div>
+                                )}
+                            </form>
                         </div>
                     </div>
                 </div>
+
+                <div className={s.additionalDetails}>
+                    <h3 className={s.detailsTitle}>Property Details</h3>
+                    <div className={s.detailsGrid}>
+                        {[
+                            {
+                                label: "Property ID",
+                                value: property._id.slice(-8).toUpperCase(),
+                            },
+                            {
+                                label: "Added On",
+                                value: new Date(property.createdAt).toLocaleDateString(),
+                            },
+                            { label: "Property Type", value: property.propertyType },
+                            { label: "Status", value: `For ${property.status}` },
+                        ].map((detail, i) => (
+                            <div className={s.detailRow} key={i}>
+                                <span className={s.detailValue}>{detail.label}</span>
+                                <span className={s.detailValue}>{detail.value}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <section className={s.similarSection}>
+                    <div className={s.similarHeader}>
+                        <div>
+                            <h2 className={s.similarTitle}>Similar Properties</h2>
+                            <p className={s.similarSubtitle}>
+                                Listings you might like in {property.city}.
+                            </p>
+                        </div>
+
+                        <Link to='/properties' className={s.similarAllLink} >
+                        All Listings <HiChevronRight />
+                        </Link>
+                    </div>
+
+                    <div className={s.similarGrid}>
+                        {similarProperties.length > 0 ? (
+                            similarProperties.slice(0,3).map((p) => <PropertyCard
+                            key={p._id} property={p}
+                        />)
+                        ) : (
+                            <div className={s.similarEmptyState}>
+                                No similar properties found in this location.
+                            </div>
+                        )}
+                    </div>
+                </section>
             </main >
         </div >
     )
