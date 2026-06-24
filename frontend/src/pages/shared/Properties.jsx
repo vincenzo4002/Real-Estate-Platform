@@ -273,14 +273,14 @@ const Properties = () => {
 
                             {/* property type*/}
                             <div className={s.filterSection}>
-                                <label classname={s.filterLabel}>Property Type</label>
-                                <div clasName={s.checkboxGroup}>
+                                <label className={s.filterLabel}>Property Type</label>
+                                <div className={s.checkboxGroup}>
                                     {propertyTypes.map((type) => (
                                         <label key={type.value} className={s.checkboxLabel}>
                                             <input
                                                 type="checkbox"
                                                 checked={filters.propertyType.includes(type.value)}
-                                                onClick={() => handleCheckboxChange("propertyType", type.value)}
+                                                onChange={() => handleCheckboxChange("propertyType", type.value)}
                                                 className={s.checkbox}
                                             />
                                             {type.label}
