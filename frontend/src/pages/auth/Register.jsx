@@ -59,7 +59,6 @@ const Register = () => {
                     </p>
 
                     {error && <div className={s.errorMessage}>{error}</div>}
-
                     {success && <div className={s.successMessage}>{success}</div>}
 
                     <form onSubmit={handleSubmit} className={s.form}>
