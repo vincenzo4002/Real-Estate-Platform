@@ -9,6 +9,8 @@ import Login from './pages/auth/Login';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import Profile from './pages/shared/Profile';
+import AdminLayout from './components/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 const App = () => {
   return (
@@ -26,6 +28,10 @@ const App = () => {
         <Route path="/properties/:id" element={<PropertyDetails />} />
 
         <Route path="/profile" element={<Profile />} />
+
+        <Route element={<AdminLayout />}>
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        </Route>
      </Routes>
     </div>
   )
