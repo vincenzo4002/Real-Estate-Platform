@@ -3,7 +3,7 @@ import { adminUsersStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import API_URL from '../../config';
 import axios from 'axios';
-import { HiOutlineFilter, HiOutlineIdentification, HiOutlineLockClosed, HiOutlineLockOpen, HiOutlineMail } from 'react-icons/hi';
+import { HiOutlineFilter, HiOutlineIdentification, HiOutlineLockClosed, HiOutlineLockOpen, HiOutlineMail, HiOutlineTrash } from 'react-icons/hi';
 
 const AdminUsers = () => {
 
@@ -232,9 +232,34 @@ const AdminUsers = () => {
                                         )}
                                     </td>
 
-                                    <td></td>
+                                    <td className={s.tdActions}>
+                                        <div className={s.actionsWrapper}>
+                                            <button onClick={() => handleBlock(user._id)}
+                                            className={s.blockButton(user.isBlocked)}
+                                            title={user.isBlocked ? "Unblock User" : "Block User"}
+                                                >
+                                                    {user.isBlocked ? (
+                                                        <HiOutlineLockOpen size={18} />
+                                                    ) : ( 
+                                                        <HiOutlineLockClosed size={18} />
+                                                    )}
+                                                </button>
+
+                                                <button onClick={() => handleDelete(user._id)}
+                                                    className={s.deleteButton}
+                                                    title="Delete User">
+                                                        <HiOutlineTrash size={18} />
+                                                    </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))
+                        ) : (
+                            <tr>
+                                <td className={s.emptyState} colSpan="5">
+                                    No users found for this filter.
+                                </td>
+                            </tr>
                         )}
                     </tbody>
                 </table>
