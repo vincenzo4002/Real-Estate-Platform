@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { adminDashboardStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import { HiOutlineCheckCircle, HiOutlineLibrary, HiOutlineTicket, HiOutlineUserGroup } from 'react-icons/hi';
+import axios from 'axios';
+import API_URL from '../../config';
 
 const AdminDashboard = () => {
 
@@ -127,8 +129,16 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className={}>
-
+      <div className={adminToolsCard}>
+        <h3 className={s.adminToolsTitle}>Admin Tools</h3>
+        <p className={s.adminToolsDesc}>
+          Quickly manage platform resources and tasks.
+        </p>
+        <div className={s.adminToolsButtonsContainer}>
+          <button className={s.adminToolButton}>System Logs</button>
+          <button className={s.adminToolButton}>DB Backup</button>
+          <button className={s.adminToolButton}>Settings</button>
+        </div>
       </div>
     </div>
     </>
