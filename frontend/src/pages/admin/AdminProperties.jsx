@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { adminPropertiesStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import PropertyCard from '../../components/common/PropertyCard';
+import { HiOutlineExternalLink, HiOutlineTrash } from 'react-icons/hi';
+import axios from 'axios';
+import API_URL from '../../config';
+import { Link } from 'react-router-dom';
 
 const AdminProperties = () => {
 
@@ -31,6 +35,26 @@ const AdminProperties = () => {
     }, []);
 
     // to delete a particular property
+    const handleDelete = async (id) => {
+        if (!window.confirm(
+            "Are you sure you want to delete this property? This action is permanent.",
+        )) return;
+        try {
+                await axios.delete(`${API_URL}/api/admin/properties/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setProperties(properties.filter((p) => p._id !== id));
+        } catch (err) {
+            alert("Failed to delete property");
+        }
+    };
+
+    if (loading)
+            return (
+                <div className={s.loaderFullPage}>
+                    <div className={s.loader}></div>
+                </div>
+            );
 
   return (
     <>
@@ -42,9 +66,40 @@ const AdminProperties = () => {
     </div>
     <div className={s.headerContainer}>
         {" "}
+        {properties.length === 0 ? (
+            <div className={s.emptyStateCard}>
+                No properties pending moderation.
+            </div>
+        ) : (
+            <div className={s.propertiesGrid}>
+                {properties.map((p) => (
+                    <PropertyCard key={p._id} property={p} renderActions={() => (
+                        <div className={s.actionWrapper}>
+                            <div className={s.sellerInfo}>
+                                <div className={s.sellerName}>
+                                    Seller: {p.seller?.name || "Unknown"}
+                                </div>
+                                <div className={s.sellerEmail}>{p.seller?.email}</div>
+                            </div>
+
+                            <div className={s.buttonGroup}>
+                                <Link to={`/property/${p._id}`} className={s.viewLink}>
+                                <HiOutlineExternalLink size={16} />
+                                </Link>
+
+                                <button onClick={() => handleDelete(p._id)}
+                                className={s.deleteButton}>
+                                    <HiOutlineTrash size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    )} />
+                ))}
+            </div>
+        )}
     </div>
     </>
-  )
-}
+  );
+};
 
 export default AdminProperties
