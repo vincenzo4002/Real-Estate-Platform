@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { sellerLayoutStyles as s } from '../assets/dummyStyles';
 import { useAuth } from '../context/AuthContext';
 import SellerSidebar from './SellerSidebar';
-import { useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import DashboardNavbar from './DashboardNavbar';
+import PendingApproval from '../pages/seller/PendingApproval';
 
 const SellerLayout = () => {
 
@@ -19,7 +21,16 @@ const SellerLayout = () => {
     <div className={s.container}>
         <SellerSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-            <div className={s.contentWrapper}></div>
+            <div className={s.contentWrapper}>
+                <DashboardNavbar onMenuClick={()=> setIsSidebarOpen(true)} />
+                    <main className={s.main}>
+                        {user?.isApproved || isPublicDashboardRoute ? (
+                            <Outlet />
+                        ) : (
+                            <PendingApproval />
+                        )}
+                    </main>
+            </div>
     </div>
   );
 };
