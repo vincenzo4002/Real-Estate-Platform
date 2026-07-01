@@ -16,6 +16,7 @@ import SellerRequests from './pages/admin/SellerRequests';
 import AdminProperties from './pages/admin/AdminProperties';
 import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminContacts from './pages/admin/AdminContacts';
+import SellerDashboard from './pages/seller/SellerDashboard';
 
 const App = () => {
   return (
@@ -33,6 +34,10 @@ const App = () => {
         <Route path="/properties/:id" element={<PropertyDetails />} />
 
         <Route path="/profile" element={<Profile />} />
+
+        <Route element={<SellerLayout />}>
+          <Route path="/dashboard" element={<SellerDashboard />} />
+        </Route>
 
         <Route element={<AdminLayout />}>
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
