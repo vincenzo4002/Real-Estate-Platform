@@ -8,7 +8,7 @@ import { HiOutlineAnnotation, HiOutlineCalendar, HiOutlineHome } from 'react-ico
 const AdminInquiries = () => {
 
     const [error, setError] = useState(null);
-        const [inquiry, setInquiry] = useState([]);
+    const [inquiry, setInquiry] = useState([]);
     const [loading, setLoading] = useState(true);
     const { token } = useAuth();
 
