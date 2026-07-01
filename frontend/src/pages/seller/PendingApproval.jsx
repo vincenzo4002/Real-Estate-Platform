@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { pendingApprovalStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
-import { HiOutlineClock, HiOutlineRefresh } from 'react-icons/hi';
+import { HiOutlineClock, HiOutlineRefresh, HiOutlineSupport } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const PendingApproval = () => {
 
@@ -46,9 +47,15 @@ const PendingApproval = () => {
             </button>
         </div>
 
-        <div></div>
+        <div className={s.supportContainer}>
+            <HiOutlineSupport size={18} />
+            Need help?{" "}
+            <Link to="/contact" className={s.supportLink}>
+                Contact Support
+            </Link>
+        </div>
     </div>
-  )
-}
+  );
+};
 
-export default PendingApproval
+export default PendingApproval;
