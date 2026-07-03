@@ -3,8 +3,9 @@ import { sellerDashboardStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import axios from "axios";
 import API_URL from "../config";
-import { HiOutlineCheckCircle,HiOutlineDownload, HiOutlineEye, HiOutlineLibrary, HiOutlinePlus, HiOutlineSearch, HiOutlineUserGroup, HiPlus } from 'react-icons/hi';
+import { HiOutlineBell, HiOutlineCheckCircle,HiOutlineDownload, HiOutlineEye, HiOutlineLibrary, HiOutlinePencilAlt, HiOutlinePlus, HiOutlineSearch, HiOutlineTrash, HiOutlineUserGroup, HiPlus } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import PropertyCard from '../../components/PropertyCard';
 
 const SellerDashboard = () => {
 
@@ -208,10 +209,126 @@ const filteredProperties = Array.isArray(properties)
                     </div>
                 </div>
 
-                {}
+                {filteredProperties.length === 0 ? (
+                    <div className={s.emptyListings}>
+                        No properties found matching "{searchTerm}".
+                    </div>
+                ) : (
+                    <>
+                    <div className={s.propertiesGrid}>
+                        {filteredProperties.slice(0,3).map((p) => (
+                            <PropertyCard key={p._id} property={p} renderActions={() => (
+                                <div className={s.propertyActions}>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleStatusUpdate(p._id, p.status)
+                                    }} className={s.statusButton(p.status)}
+                                    title={
+                                       p.status === "sold" ? "Mark as Available" : "Mark as Sold" 
+                                    }>
+                                        <HiOutlineCheckCircle size={14} /> {" "}
+                                        {p.status === "sold" ? "Available" : "Sold"}
+                                    </button>
+
+                                    <Link to={`/edit-property/${p._id}`} className={s.editButton} >
+                                        <HiOutlinePencilAlt size={14} />
+                                        Edit
+                                    </Link>
+
+                                    <button onClick={() => {
+                                        handleDeleteProperty(p._id);
+                                    }} className={s.deleteButton}>
+                                        <HiOutlineTrash size={14} />
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
+                            />
+                        ))}
+                    </div>
+
+                    {filteredProperties.length > 3 && (
+                        <div className={s.showMoreWrapper}>
+                            <Link to="/my-properties" className={s.showMoreButton}>
+                                Show More Listings{" "}
+                                <HiOutlinePencilAlt size={18} style={{
+                                    transform: "rotate(90deg)",
+                                }}
+                                />
+                            </Link>
+                        </div>
+                      )}
+                    </>
+                )}
+            </div>
+
+            <div className={s.widgetsGrid}>
+                <div className={s.inquiriesWidget}>
+                    <h2 className={s.widgetTitle}>Recent Lead Inquiries</h2>
+                    <p className={s.widgetSubtitle}>
+                        New messages from potential buyers.
+                    </p>
+
+                    <div className={s.inquiriesList}>
+                        {inquiries.map((inq, i) => (
+                            <div key={inq._id} className={s.inquiryItem}>
+                                <div className={s.inquiryLeft}>
+                                    <div className={s.inquiryIcon}>
+                                        <HiOutlineBell size={18} color="var(--primary)" />
+                                    </div>
+
+                                    <div>
+                                        <div className={s.inquiryName}>
+                                            {inq.buyer?.name || "Potential Buyer"}
+                                        </div>
+                                        <div className={s.inquiryProperty}>
+                                            {inq.property?.title?.length > 30 ? inq.property?.title?.slice(0,30) + '...' : inq.property?.title}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={s.inquiryRight}>
+                                    <div className={s.inquiryDate}>
+                                        {new Date(inq.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <span className={s.inquiryStatus(inq.status)}>
+                                        {inq.status === "read" ? "Read" : "New"}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                        {inquiries.length === 0 && (
+                            <p className={s.noInquiries}>No recent inquiries.</p>
+                        )}
+                    </div>
+                </div>
+
+                <div className={s.titleWidget}>
+                    <h2 className={s.widgetTitle}>Quick Tips</h2>
+                   
+                   <div className={s.tipsList}>
+                    <div className={s.tipCardHighViews}>
+                        <h4 className={s.tipTitleHighViews}>
+                            <HiOutlineEye size={16} /> High Views!
+                        </h4>
+                        <p className={s.tipTextHighViews}>
+                            Your listings are trending. Try adding video tours to increase interest.
+                        </p>
+                    </div>
+
+                    <div className={s.tipCardMarket}>
+                        <h4 className={s.tipTitleMarket}>
+                        Market Insights
+                        </h4>
+                        <p className={s.tipTextMarket}>
+                            Properties in your area are selling fast.Your prices are competitive.
+                        </p>
+                    </div>
+                   </div>
+                </div>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default SellerDashboard
+export default SellerDashboard;
