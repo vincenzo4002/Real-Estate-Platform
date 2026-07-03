@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { addPropertyStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import API_URL from "../config";
+import { HiUpload } from 'react-icons/hi';
 
 const AddProperty = () => {
 
@@ -253,11 +256,84 @@ const AddProperty = () => {
                         </div>
                     </div>
 
-                    <div></div>
+                    <div className={s.section}>
+                        <div className={`${s.sectionHeader} ${s.sectionHeaderSmallMargin}`}>
+                            <div className={s.sectionBar}></div>
+                            <h3 className={s.sectionTitle}>Amenities</h3>
+                        </div>
+
+                        <div classNaame={s.amenitiesGrid}>
+                            {commonAmenities.map((amenity) => (
+                                <label key={amenity} className={`${s.amenityLabelBase} ${formData.amenities.includes(amenity) ? s.amenityLabelActive : s.amenityLabelInactive}`}>
+                                    <input type="checkbox" value={amenity} checked={formData.amenities.includes(amenity)} onChange={() => handleAmenityChange(amenity)} className={s.amenityCheckbox} />
+                                    <span className={`${s.amenityTextBase} ${formData.amenities.includes(amenity) ? s.amenityTextActive : s.amenityTextInactive}`}>
+                                        {amenity}
+                                    </span>
+                                   </label> 
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={s.section}>
+                        <div className={`${s.sectionHeader} ${s.sectionHeaderSmallMargin}`}>
+                            <div className={s.sectionBar}></div>
+                            <h3 className={s.sectionTitle}>Property Images</h3>
+                        </div>
+
+                        <div className={s.uploadArea}>
+                            <input type="file" accept="image/*" multiple onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                            <div className={s.uploadIconWrapper}>
+                               <HiUpload size={40} color="#64748b" />
+                            </div>
+                            <h4 className={s.uploadTitle}>
+                                Click to upload or drag and drop
+                            </h4>
+                            <p className={s.uploadSubtext}>
+                                Upload upto 10 high-quality images (PNG, JPG)
+                                </p>
+                        </div>
+
+                        {imagePreviews.length > 0 && (
+                            <div className={s.previewGrid}>
+                                {imagePreviews.map((src, i) => (
+                            <div key={i} className={s.previewItem}>
+                                <img src={src} alt="preview" className="w-full h-full object-cover" />
+                                <button
+                                type="button"
+                                onClick={() => removeImage(i)}
+                                className={s.removeButton}
+                                style={{
+                                    transform: "rotate(45deg)",
+                                }}
+                                >
+                                    <HiUpload size={12} />
+                                </button>
+                            </div>
+                                ))}
+
+                                {images.length > 0 && (
+                                    <div className={s.addMoreBox}>
+                                        <input type="file" accept="image/*" multiple onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                                        <HiUpload size={20} color="#64748b" />
+                                        <span className={s.addMoreText}>Add More</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={s.footerButtons}>
+                        <button type="button" className={s.cancelButton} onClick={() => navigate("/dashboard")}>
+                            Cancel
+                        </button>
+                        <button type="submit" className={s.submitButton} disabled={loading}>
+                            {loading ? "Publishing..." : "Publish Listing"}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AddProperty
+export default AddProperty;

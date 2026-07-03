@@ -18,6 +18,7 @@ import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminContacts from './pages/admin/AdminContacts';
 import SellerDashboard from './pages/seller/SellerDashboard';
 import AddProperty from './pages/seller/AddProperty';
+import MyProperties from './pages/seller/MyProperties';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
         <Route element={<SellerLayout />}>
           <Route path="/dashboard" element={<SellerDashboard />} />
           <Route path="/add-property" element={<AddProperty />} />
+          <Route path="/my-properties" element={<MyProperties />} />
         </Route>
 
         <Route element={<AdminLayout />}>
