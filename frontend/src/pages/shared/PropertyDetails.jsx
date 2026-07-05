@@ -118,7 +118,7 @@ const PropertyDetails = () => {
 
             await axios.post(`${API_URL}/api/chat/send`, {
                 chatId: chat._id,
-                text: `(Context: Imterested in property "${property.title}")`,
+                text: `(Context: Interested in property "${property.title}")`,
                 image: property.images[0],
             }, { header: { Authorization: `Bearer ${token}` } },
             );

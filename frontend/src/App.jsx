@@ -20,17 +20,21 @@ import SellerDashboard from './pages/seller/SellerDashboard';
 import AddProperty from './pages/seller/AddProperty';
 import MyProperties from './pages/seller/MyProperties';
 import EditProperty from './pages/seller/EditProperty';
+import { PublicRoute } from "./components/common/ProtectedRoute";
+
+// to scroll to top whenever the route is change
 
 const App = () => {
   return (
     <div>
-     <Routes>
-      <Route path="/login" element={<Login />} />
-       <Route path="/register" element={<Register />} />
-       <Route path="/verify-email" element={<VerifyEmail />} />
-       <Route path="/forgot-password" element={<ForgotPassword />} />
-       <Route path="/reset-password/:token" element={<ResetPassword />} />
-       
+      <Routes>
+        <Route element={<PublicRoute />} >
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+        </Route>
 
         <Route path="/" element={<LandingPage />} />
         <Route path="/properties" element={<Properties />} />
@@ -46,14 +50,14 @@ const App = () => {
         </Route>
 
         <Route element={<AdminLayout />}>
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/seller-requests" element={<SellerRequests />} />
-        <Route path="/admin/properties" element={<AdminProperties />} />
-        <Route path="/admin/inquiries" element={<AdminInquiries />} />
-        <Route path="/admin/contacts" element={<AdminContacts />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/seller-requests" element={<SellerRequests />} />
+          <Route path="/admin/properties" element={<AdminProperties />} />
+          <Route path="/admin/inquiries" element={<AdminInquiries />} />
+          <Route path="/admin/contacts" element={<AdminContacts />} />
         </Route>
-     </Routes>
+      </Routes>
     </div>
   )
 }

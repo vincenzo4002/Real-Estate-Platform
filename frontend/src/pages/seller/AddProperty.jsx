@@ -262,7 +262,7 @@ const AddProperty = () => {
                             <h3 className={s.sectionTitle}>Amenities</h3>
                         </div>
 
-                        <div classNaame={s.amenitiesGrid}>
+                        <div className={s.amenitiesGrid}>
                             {commonAmenities.map((amenity) => (
                                 <label key={amenity} className={`${s.amenityLabelBase} ${formData.amenities.includes(amenity) ? s.amenityLabelActive : s.amenityLabelInactive}`}>
                                     <input type="checkbox" value={amenity} checked={formData.amenities.includes(amenity)} onChange={() => handleAmenityChange(amenity)} className={s.amenityCheckbox} />
