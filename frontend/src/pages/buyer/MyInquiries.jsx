@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import { myInquiriesStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import API_URL from '../../config';
 import { useState } from 'react';
 import Navbar from '../../components/common/Navbar';
-import { HiOutlineChatAlt2 } from 'react-icons/hi';
+import { HiCalendar, HiChatAlt2, HiCheckCircle, HiExternalLink, HiHome, HiMail, HiOutlineChatAlt2, HiPhone, HiUser } from 'react-icons/hi';
 
 const MyInquiries = () => {
 
@@ -112,7 +114,7 @@ const MyInquiries = () => {
                     </h1>
                     <p className={s.textMuted}>
                         {isSeller
-                        ? "Review and respond to interest in your properties
+                        ? "Review and respond to interest in your properties"
                         : "Track the status of your property inquiries."}
                     </p>
                 </div>
@@ -125,12 +127,104 @@ const MyInquiries = () => {
                         <h2 className={s.mb4}>
                             No inquiries {isSeller ? "received" : "sent"}
                         </h2>
-                        <p className={s.textMuted}></p>
+                        <p className={s.textMutedMb8}>
+                            {isSeller
+                            ? "You haven't received and inquiries yet. Better listings get more attention!"
+                        : "You haven't contacted and sellers yet. Interested in a property? Send an inquiry!"}
+                        </p>
+
+                        <Link to="/" className={s.btnPrimary}>
+                        {isSeller ? "Improve My Listings" : "Discover Properties"}
+                        </Link>
+                    </div>
+                ):( 
+                    <div className={s.flexColGap6}>
+                        {inquiries.map((inq) => (
+                            <div key={inq._id} className={s.inquiryCard}>
+                                <div className={s.inquiryMain}>
+                                    <div className={s.iconWrapper}>
+                                        <HiHome className={s.iconSize} />
+                                    </div>
+                                    <div className={s.flex1}>
+                                        <div className={s.titleRow}>
+                                            <h3 className={s.titleText}>{inq.property?.title}</h3>
+                                            <span
+                                            className={`${s.badge} ${
+                                                inq.isRead ? s.badgeRead : s.badgeNew
+                                            }`}>
+                                                {innq.isRead ? "READ" : "NEW"}
+                                            </span>
+                                        </div>
+
+                                        {isSeller && (
+                                            <div className={s.buyerInfo}>
+                                                <div classNam={s.infoItem}>
+                                                    <HiUser className={s.textMutedSmall}/>{" "}
+                                                    <span className={s.fontSemibold}>
+                                                        {inq.buyer?.name}
+                                                    </span>
+                                                </div>
+
+                                                <div className={s.infoItem}>
+                                                    <HiMail className={s.textMutedSmall} />{" "}
+                                                    {inq.buyer?.email}
+                                                </div>
+
+                                                <div className={s.infoItem}>
+                                                    <HiPhone className={s.textMutedSmall} />{" "}
+                                                    {inq.buyer?.phone || "No phone provided"}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <p className={s.message}>"{inq.message}"</p>
+
+                                        <div className={s.meta}>
+                                            <div className={s.flexItemsCenterGap2}>
+                                                <HiCalendar size={16} />{" "}
+                                                {isSeller ? "Received" : "Sent"} on{" "}
+                                                {new Date(inq.createdAt).toLocaleDateString()}
+                                            </div>
+
+                                            {!isSeller && (
+                                                <div className={s.flexItemsCenterGap2}>
+                                                    <HiCheckCircle size={16} /> {" "}
+                                                    {inq.isRead ? "Seller viewed" : "Waiting for seller"}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={s.actions}>
+                                    <Link
+                                    to={`/property/${inq.property?._id}`}
+                                    className={s.btnOutline}
+                                    >
+                                        View Property <HiExternalLink />
+                                    </Link>
+
+                                    {isSeller && !inq.isRead && (
+                                        <button onClick={() => markAsRead(inq._id)}
+                                        className={s.btnPrimaryWhitespaceNowrap}>
+                                            Mark As Read
+                                        </button>
+                                    )}
+                                    {isSeller && (
+                                        <button
+                                        onClick={() => handleStartChat(inq)}
+                                        className={s.btnMessage}>
+                                            <HiChatAlt2 /> Message
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default MyInquiries
+export default MyInquiries;
