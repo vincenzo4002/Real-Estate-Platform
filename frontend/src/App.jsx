@@ -24,6 +24,7 @@ import { ProtectedRoute, PublicRoute } from "./components/common/ProtectedRoute"
 import { FaChevronUp } from 'react-icons/fa';
 import { useAuth } from './context/AuthContext';
 import MyInquiries from './pages/buyer/MyInquiries';
+import ChatMessages from './pages/shared/ChatMessages';
 
 // to scroll to top whenever the route is change
 const ScrollToTopOnRouteChange = () => {
@@ -103,6 +104,7 @@ const App = () => {
         <Route element={<ProtectedRoute allowedRoles={["buyer", "seller", "admin"]} />} >
           <Route element={<SellerLayoutWrapper />}>
           <Route path="/inquiries" element={<MyInquiries />} />
+          <Route path="/chat-messages" element={<ChatMessages />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
 
