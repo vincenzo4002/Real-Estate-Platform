@@ -10,6 +10,7 @@ import { updateProperty,getPropertyCounts } from "../controllers/property.contro
 const propertyRouter = express.Router();
 
 propertyRouter.get("/", getAllProperties);
+propertyRouter.get("/counts", getPropertyCounts);
 
 //protect routes that only seller can do these works
 propertyRouter.post("/", protect, authorize("seller"),upload.array("images", 10),addProperty);
@@ -20,7 +21,7 @@ propertyRouter.put("/:id", protect, authorize("seller"), upload.array("images", 
 propertyRouter.delete("/:id", protect, authorize("seller"), deleteProperty);
 propertyRouter.patch("/:id/status", protect, authorize("seller"), updatePropertyStatus);
 
-propertyRouter.get("/counts", getPropertyCounts);
+
 propertyRouter.get("/:id", getPropertyDetails);
 
 propertyRouter.get("/seller/dashboard", protect, authorize("seller"), getSellerDashboard);

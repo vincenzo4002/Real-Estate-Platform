@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { sellerDashboardStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import axios from "axios";
-import API_URL from "../config";
+import API_URL from "../../config";
 import { HiOutlineBell, HiOutlineCheckCircle,HiOutlineDownload, HiOutlineEye, HiOutlineLibrary, HiOutlinePencilAlt, HiOutlinePlus, HiOutlineSearch, HiOutlineTrash, HiOutlineUserGroup, HiPlus } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
-import PropertyCard from '../../components/PropertyCard';
+import PropertyCard from '../../components/common/PropertyCard';
 
 const SellerDashboard = () => {
 

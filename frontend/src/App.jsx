@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import SellerLayout from "./components/SellerLayout";
+import { Routes, Route, Navigate, useLocation, Outlet } from 'react-router-dom';
 import LandingPage from './pages/shared/LandingPage';
 import Properties from './pages/shared/Properties';
 import PropertyDetails from './pages/shared/PropertyDetails';
@@ -33,7 +34,7 @@ const ScrollToTopOnRouteChange = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behaviour: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }), [pathname];
 };
 
@@ -48,7 +49,7 @@ const ScrollTopButton = () => {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
 
-    return () => window.removeEventListener("scroll, handleScroll");
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleClick = () => {

@@ -13,7 +13,7 @@ const ChatMessages = () => {
     const location = useLocation();
     const {socket, activeChat, setActiveChat, joinChat, sendMessage} = useChat();
 
-    const [conversation, setConversation] = useState([]);
+    const [conversations, setConversations] = useState([]);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [loading, setLoading] = useState(true);
@@ -34,13 +34,13 @@ const ChatMessages = () => {
                 },
             });
             const fetchConversations = res.data;
-            setConversation(fetchedConversations);
+            setConversations(fetchedConversations);
 
             if(location.state?.chat){
                 const existingChat = fetchedConversations.find(
-                    (c) => c._id === location.state.chat._id,
-                ),
-                if(existingChat){
+                    (c) => c._id === location.state.chat._id
+                );
+                if (existingChat){
                     setActiveChat(existingChat)
                 } else {
                     setActiveChat(location.state.chat);
@@ -100,7 +100,7 @@ const ChatMessages = () => {
     }, [activeChat]);
 
     // to sendd messages
-    const habdleSendMessage = async (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         if(!newMessage.trim() || !activeChat) return;
 

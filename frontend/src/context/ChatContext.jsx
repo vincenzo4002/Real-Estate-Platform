@@ -11,7 +11,7 @@ export const ChatProvider = ({children}) => {
     const {user} = useAuth();
 
     const [socket, setSocket] = useState(null);
-    const [activeChar, setActiveChat] = useState(null);
+    const [activeChat, setActiveChat] = useState(null);
     const [notifications, setNotifications] = useState([]);
     const activeChatRef = useRef(null);
 

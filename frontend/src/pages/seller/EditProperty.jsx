@@ -3,8 +3,9 @@ import { editPropertyStyles as s } from '../../assets/dummyStyles';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from "axios";
-import API_URL from "../config";
+import API_URL from "../../config";
 import { HiUpload, HiX } from 'react-icons/hi';
+
 
 const EditProperty = () => {
 
