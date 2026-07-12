@@ -30,7 +30,7 @@ const VerifyEmail = () => {
                 email,
                 code,
             });
-            if (res.date.success) {
+            if (res.data.success) {
                 setSuccess("Email verified successfully! Redirecting to login...");
                 setTimeout(() => navigate("/login"), 2000);
             }
@@ -46,7 +46,7 @@ const VerifyEmail = () => {
     return (
         <div className={s.pageContainer}>
             <Navbar />
-            <div className={containerCenter}>
+            <div className={s.containerCenter}>
                 <div className={s.card}>
                     <h2 className={s.title}>Verify Your Email</h2>
                     <p className={s.subtitle}>
@@ -57,7 +57,7 @@ const VerifyEmail = () => {
                     {success && <div className={s.successAlert}>{success}</div>}
 
                     <form onSubmit={handleSubmit} className={s.form}>
-                        {!emailFormState && (
+                        {!emailFromState && (
                             <div>
                                 <label className={s.label}>Email Address</label>
                                 <input
